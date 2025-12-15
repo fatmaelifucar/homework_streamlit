@@ -149,7 +149,7 @@ metrics = [
     ("Total Downloads", "DOWNLOADS", '#FF9F36')
 ]
 
-cols = st.columns(5)
+cols = st.columns(4)
 for col, (title, column, color) in zip(cols, metrics):
     total_value = df[column].sum()
     display_metric(col, title, total_value, df_display, column, color, time_frame)
@@ -164,7 +164,7 @@ else:
     mask = (df_display.index >= pd.Timestamp(start_date)) & (df_display.index <= pd.Timestamp(end_date))
 df_filtered = df_display.loc[mask]
 
-cols = st.columns(5)
+cols = st.columns(4)
 for col, (title, column, color) in zip(cols, metrics):
     display_metric(col, title.split()[-1], df_filtered[column].sum(), df_filtered, column, color, time_frame)
 
