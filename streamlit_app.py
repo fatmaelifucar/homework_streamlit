@@ -36,6 +36,7 @@ def aggregate_data(df, freq):
             'LIKES': 'sum',
             'COMMENTS': 'sum',
             'SHARES': 'sum',
+            'DOWNLOADS': 'sum',
         })
         return df_agg
     else:
@@ -46,6 +47,7 @@ def aggregate_data(df, freq):
             'LIKES': 'sum',
             'COMMENTS': 'sum',
             'SHARES': 'sum',
+            'DOWNLOADS': 'sum',
         })
 
 def get_weekly_data(df):
@@ -143,10 +145,11 @@ metrics = [
     ("Total Subscribers", "NET_SUBSCRIBERS", '#29b5e8'),
     ("Total Views", "VIEWS", '#FF9F36'),
     ("Total Watch Hours", "WATCH_HOURS", '#D45B90'),
-    ("Total Likes", "LIKES", '#7D44CF')
+    ("Total Likes", "LIKES", '#7D44CF'),
+    ("Total Downloads", "DOWNLOADS", '#FF9F36')
 ]
 
-cols = st.columns(4)
+cols = st.columns(5)
 for col, (title, column, color) in zip(cols, metrics):
     total_value = df[column].sum()
     display_metric(col, title, total_value, df_display, column, color, time_frame)
@@ -161,7 +164,7 @@ else:
     mask = (df_display.index >= pd.Timestamp(start_date)) & (df_display.index <= pd.Timestamp(end_date))
 df_filtered = df_display.loc[mask]
 
-cols = st.columns(4)
+cols = st.columns(5)
 for col, (title, column, color) in zip(cols, metrics):
     display_metric(col, title.split()[-1], df_filtered[column].sum(), df_filtered, column, color, time_frame)
 
