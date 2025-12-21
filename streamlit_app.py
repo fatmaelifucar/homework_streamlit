@@ -158,55 +158,34 @@ st.subheader("Selected Duration")
 st.subheader("Metric Relationships (Selected Duration)")
 
 if len(df_filtered) < 2:
-    st.info("Not enough data points in the selected duration to show relationship charts.")
+    st.info("Not enough data points (need at least 2 periods) in the selected duration to show relationship charts.")
+elif df_filtered.empty:
+    st.info("No data in the selected duration.")
 else:
+    # Check if there's actual variation in the data
+    if (df_filtered[['VIEWS', 'WATCH_HOURS', 'LIKES', 'COMMENTS']].eq(0).all().any() or
+        df_filtered[['VIEWS', 'WATCH_HOURS', 'LIKES', 'COMMENTS']].nunique() <= 1).any():
+        st.warning("Some metrics have zero or no variation in this period — scatter charts may appear empty.")
+
     col1, col2 = st.columns(2)
     
     with col1:
         st.caption("Watch Hours vs. Likes")
-        chart_data_wh_likes = df_filtered[['WATCH_HOURS', 'LIKES']].copy()
-        chart_data_wh_likes.rename(columns={'WATCH_HOURS': 'Watch Hours', 'LIKES': 'Likes'}, inplace=True)
-        st.scatter_chart(
-            chart_data_wh_likes,
-            x='Watch Hours',
-            y='Likes',
-            color='#D45B90', 
-            size=100,
-        )
-    
+        chart_wh_likes = df_filtered[['WATCH_HOURS', 'LIKES']].rename(columns={'WATCH_HOURS': 'Watch Hours', 'LIKES': 'Likes'})
+        st.scatter_chart(chart_wh_likes, x='Watch Hours', y='Likes', color='#D45B90', size=100)
+        
         st.caption("Views vs. Likes")
-        chart_data_views_likes = df_filtered[['VIEWS', 'LIKES']].copy()
-        chart_data_views_likes.rename(columns={'VIEWS': 'Views', 'LIKES': 'Likes'}, inplace=True)
-        st.scatter_chart(
-            chart_data_views_likes,
-            x='Views',
-            y='Likes',
-            color='#FF9F36', 
-            size=100,
-        )
+        chart_views_likes = df_filtered[['VIEWS', 'LIKES']].rename(columns={'VIEWS': 'Views', 'LIKES': 'Likes'})
+        st.scatter_chart(chart_views_likes, x='Views', y='Likes', color='#FF9F36', size=100)
     
     with col2:
         st.caption("Likes vs. Comments")
-        chart_data_likes_comments = df_filtered[['LIKES', 'COMMENTS']].copy()
-        chart_data_likes_comments.rename(columns={'LIKES': 'Likes', 'COMMENTS': 'Comments'}, inplace=True)
-        st.scatter_chart(
-            chart_data_likes_comments,
-            x='Likes',
-            y='Comments',
-            color='#7D44CF', 
-            size=100,
-        )
-    
+        chart_likes_comments = df_filtered[['LIKES', 'COMMENTS']].rename(columns={'LIKES': 'Likes', 'COMMENTS': 'Comments'})
+        st.scatter_chart(chart_likes_comments, x='Likes', y='Comments', color='#7D44CF', size=100)
+        
         st.caption("Watch Hours vs. Comments")
-        chart_data_wh_comments = df_filtered[['WATCH_HOURS', 'COMMENTS']].copy()
-        chart_data_wh_comments.rename(columns={'WATCH_HOURS': 'Watch Hours', 'COMMENTS': 'Comments'}, inplace=True)
-        st.scatter_chart(
-            chart_data_wh_comments,
-            x='Watch Hours',
-            y='Comments',
-            color='#D45B90',
-            size=100,
-        )
+        chart_wh_comments = df_filtered[['WATCH_HOURS', 'COMMENTS']].rename(columns={'WATCH_HOURS': 'Watch Hours', 'COMMENTS': 'Comments'})
+        st.scatter_chart(chart_wh_comments, x='Watch Hours', y='Comments', color='#D45B90', size=100)
         
 if time_frame == 'Quarterly':
     start_quarter = custom_quarter(start_date)
