@@ -153,6 +153,14 @@ for col, (title, column, color) in zip(cols, metrics):
     display_metric(col, title, total_value, df_display, column, color, time_frame)
 
 st.subheader("Selected Duration")
+        
+if time_frame == 'Quarterly':
+    start_quarter = custom_quarter(start_date)
+    end_quarter = custom_quarter(end_date)
+    mask = (df_display.index >= start_quarter) & (df_display.index <= end_quarter)
+else:
+    mask = (df_display.index >= pd.Timestamp(start_date)) & (df_display.index <= pd.Timestamp(end_date))
+df_filtered = df_display.loc[mask]
 
 # Additional Relationship Visualizations
 st.subheader("Metric Relationships (Selected Duration)")
@@ -186,14 +194,6 @@ else:
         st.caption("Watch Hours vs. Comments")
         chart_wh_comments = df_filtered[['WATCH_HOURS', 'COMMENTS']].rename(columns={'WATCH_HOURS': 'Watch Hours', 'COMMENTS': 'Comments'})
         st.scatter_chart(chart_wh_comments, x='Watch Hours', y='Comments', color='#D45B90', size=100)
-        
-if time_frame == 'Quarterly':
-    start_quarter = custom_quarter(start_date)
-    end_quarter = custom_quarter(end_date)
-    mask = (df_display.index >= start_quarter) & (df_display.index <= end_quarter)
-else:
-    mask = (df_display.index >= pd.Timestamp(start_date)) & (df_display.index <= pd.Timestamp(end_date))
-df_filtered = df_display.loc[mask]
 
 cols = st.columns(5)
 for col, (title, column, color) in zip(cols, metrics):
